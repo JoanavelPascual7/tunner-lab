@@ -1,9 +1,9 @@
 const express = require("express");
 const songs = express.Router();
 const {
-  getAllSongs, // Corrected function name
+  getAllSongs,
   getSong,
-  createSong,
+  createSong, // Updated function name
   deleteSong,
   updateSong,
 } = require("../queries/songs");
@@ -11,14 +11,13 @@ const { checkName, checkBoolean, checkArtist } = require("../validations/checkSo
 
 // INDEX
 songs.get("/", async (req, res) => {
-    const allsongs = await getAllSongs(); // Corrected function name
-    if (allsongs[0]) {
-      res.status(200).json(allsongs);
-    } else {
-      res.status(500).json({ error: "server error" });
-    }
+  const allsongs = await getAllSongs();
+  if (allsongs.length > 0) {
+    res.status(200).json(allsongs);
+  } else {
+    res.status(500).json({ error: "server error" });
+  }
 });
-
 
 // SHOW
 songs.get("/:id", async (req, res) => {
@@ -34,8 +33,8 @@ songs.get("/:id", async (req, res) => {
 // CREATE
 songs.post("/", checkName, checkBoolean, checkArtist, async (req, res) => {
   try {
-    const Song = await createSong(req.body);
-    res.json(Song);
+    const newSong = await createSong(req.body);
+    res.json(newSong);
   } catch (error) {
     res.status(400).json({ error: error });
   }
